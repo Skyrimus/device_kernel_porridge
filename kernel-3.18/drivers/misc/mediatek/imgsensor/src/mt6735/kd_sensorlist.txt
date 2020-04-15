@@ -1,0 +1,38 @@
+diff -Naur a/kd_sensorlist.c b/kd_sensorlist.c
+--- a/kd_sensorlist.c	2018-09-21 23:32:04.000000000 +0300
++++ b/kd_sensorlist.c	2019-05-14 01:04:11.700330000 +0300
+@@ -1060,6 +1060,10 @@
+ #ifndef CONFIG_FPGA_EARLY_PORTING
+ 			ret = kdCISModulePowerOn(socketIdx[i], sensorNameStr[i], On, mode_name);
+ #endif
++			if ((socketIdx[i] << 1) == ret)
++			{
++				return 8;
++			}
+ 			if (ERROR_NONE != ret) {
+ 				PK_ERR("[%s]", __func__);
+ 				return ret;
+@@ -1348,15 +1352,22 @@
+ ********************************************************************************/
+ static inline int adopt_CAMERA_HW_CheckIsAlive(void)
+ {
++
+ 	UINT32 err = 0;
+ 	UINT32 err1 = 0;
+ 	UINT32 i = 0;
+ 	MUINT32 sensorID = 0;
+ 	MUINT32 retLen = 0;
+ #ifndef CONFIG_MTK_FPGA
++	MINT32 ret = ERROR_NONE;
+ 	KD_IMGSENSOR_PROFILE_INIT();
+ 	/* power on sensor */
+-	kdModulePowerOn((CAMERA_DUAL_CAMERA_SENSOR_ENUM *)g_invokeSocketIdx, g_invokeSensorNameStr, true, CAMERA_HW_DRVNAME1);
++	ret = kdModulePowerOn((CAMERA_DUAL_CAMERA_SENSOR_ENUM *)g_invokeSocketIdx, g_invokeSensorNameStr, true, CAMERA_HW_DRVNAME1);
++	if (8 == ret)
++	{
++	err = ERROR_SENSOR_CONNECT_FAIL;
++	return err ?  -EIO:err;
++	}
+ 	/* wait for power stable */
+ 	mDELAY(10);
+ 	KD_IMGSENSOR_PROFILE("kdModulePowerOn");
