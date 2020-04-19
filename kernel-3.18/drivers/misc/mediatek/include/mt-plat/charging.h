@@ -54,7 +54,6 @@
 #ifndef CONFIG_ARCH_MT8173
 #include <mach/mt_charging.h>
 #endif
-#include <linux/types.h>
 
 /* ============================================================ */
 /* define */
@@ -142,28 +141,16 @@ typedef enum {
 	CHARGING_CMD_RUN_AICL,
 	CHARGING_CMD_SET_IRCMP_RESISTOR,
 	CHARGING_CMD_SET_IRCMP_VOLT_CLAMP,
-	CHARGING_CMD_ENABLE_DC_VBUSOV,
-	CHARGING_CMD_SET_DC_VBUSOV,
-	CHARGING_CMD_ENABLE_DC_VBUSOC,
-	CHARGING_CMD_SET_DC_VBUSOC,
-	CHARGING_CMD_ENABLE_DC_VBATOV,
-	CHARGING_CMD_SET_DC_VBATOV,
-	CHARGING_CMD_GET_IS_DC_ENABLE,
-	CHARGING_CMD_SET_PEP20_EFFICIENCY_TABLE,
-	CHARGING_CMD_ENABLE_CHR_TYPE_DET,
-	CHARGING_CMD_ENABLE_DISCHARGE,
-	CHARGING_CMD_GET_TBUS,
-	CHARGING_CMD_GET_TBAT,
 	CHARGING_CMD_NUMBER
 } CHARGING_CTRL_CMD;
 
 
 typedef enum {
 	CHARGER_UNKNOWN = 0,
-	STANDARD_HOST,		/* USB : 450mA */
+	STANDARD_HOST,		/* USB : 8000mA */
 	CHARGING_HOST,
-	NONSTANDARD_CHARGER,	/* AC : 450mA~1A */
-	STANDARD_CHARGER,	/* AC : ~1A */
+	NONSTANDARD_CHARGER,	/* AC : 800mA~1A */
+	STANDARD_CHARGER,	/* AC : ~1500mA */
 	APPLE_2_1A_CHARGER,	/* 2.1A apple charger */
 	APPLE_1_0A_CHARGER,	/* 1A apple charger */
 	APPLE_0_5A_CHARGER,	/* 0.5A apple charger */
@@ -306,6 +293,7 @@ typedef enum {
 	BATTERY_VOLT_03_680000_V = 3680000,
 	BATTERY_VOLT_03_700000_V = 3700000,
 	BATTERY_VOLT_03_720000_V = 3720000,
+	BATTERY_VOLT_03_725000_V = 3725000,
 	BATTERY_VOLT_03_740000_V = 3740000,
 	BATTERY_VOLT_03_750000_V = 3750000,
 	BATTERY_VOLT_03_760000_V = 3760000,
@@ -456,50 +444,62 @@ typedef enum {
 	CHARGE_CURRENT_100_00_MA = 10000,
 	CHARGE_CURRENT_125_00_MA = 12500,
 	CHARGE_CURRENT_150_00_MA = 15000,
+	CHARGE_CURRENT_175_00_MA = 17500,
 	CHARGE_CURRENT_200_00_MA = 20000,
 	CHARGE_CURRENT_225_00_MA = 22500,
 	CHARGE_CURRENT_250_00_MA = 25000,
+	CHARGE_CURRENT_275_00_MA = 27500,
 	CHARGE_CURRENT_300_00_MA = 30000,
+	CHARGE_CURRENT_325_00_MA = 32500,
 	CHARGE_CURRENT_350_00_MA = 35000,
 	CHARGE_CURRENT_375_00_MA = 37500,
 	CHARGE_CURRENT_400_00_MA = 40000,
 	CHARGE_CURRENT_425_00_MA = 42500,
 	CHARGE_CURRENT_450_00_MA = 45000,
+	CHARGE_CURRENT_475_00_MA = 47500,
 	CHARGE_CURRENT_500_00_MA = 50000,
 	CHARGE_CURRENT_525_00_MA = 52500,
 	CHARGE_CURRENT_550_00_MA = 55000,
+	CHARGE_CURRENT_575_00_MA = 57500,
 	CHARGE_CURRENT_600_00_MA = 60000,
 	CHARGE_CURRENT_625_00_MA = 62500,
 	CHARGE_CURRENT_650_00_MA = 65000,
 	CHARGE_CURRENT_675_00_MA = 67500,
 	CHARGE_CURRENT_700_00_MA = 70000,
+	CHARGE_CURRENT_725_00_MA = 72500,
 	CHARGE_CURRENT_750_00_MA = 75000,
 	CHARGE_CURRENT_775_00_MA = 77500,
 	CHARGE_CURRENT_800_00_MA = 80000,
 	CHARGE_CURRENT_825_00_MA = 82500,
 	CHARGE_CURRENT_850_00_MA = 85000,
+	CHARGE_CURRENT_875_00_MA = 87500,
 	CHARGE_CURRENT_900_00_MA = 90000,
 	CHARGE_CURRENT_925_00_MA = 92500,
 	CHARGE_CURRENT_950_00_MA = 95000,
 	CHARGE_CURRENT_975_00_MA = 97500,
 	CHARGE_CURRENT_1000_00_MA = 100000,
+	CHARGE_CURRENT_1025_00_MA = 102500,
 	CHARGE_CURRENT_1050_00_MA = 105000,
 	CHARGE_CURRENT_1075_00_MA = 107500,
 	CHARGE_CURRENT_1100_00_MA = 110000,
 	CHARGE_CURRENT_1125_00_MA = 112500,
 	CHARGE_CURRENT_1150_00_MA = 115000,
+	CHARGE_CURRENT_1175_00_MA = 117500,
 	CHARGE_CURRENT_1200_00_MA = 120000,
 	CHARGE_CURRENT_1225_00_MA = 122500,
 	CHARGE_CURRENT_1250_00_MA = 125000,
 	CHARGE_CURRENT_1275_00_MA = 127500,
 	CHARGE_CURRENT_1300_00_MA = 130000,
+	CHARGE_CURRENT_1325_00_MA = 132500,
 	CHARGE_CURRENT_1350_00_MA = 135000,
 	CHARGE_CURRENT_1375_00_MA = 137500,
 	CHARGE_CURRENT_1400_00_MA = 140000,
 	CHARGE_CURRENT_1425_00_MA = 142500,
 	CHARGE_CURRENT_1450_00_MA = 145000,
+	CHARGE_CURRENT_1475_00_MA = 147500,
 	CHARGE_CURRENT_1500_00_MA = 150000,
 	CHARGE_CURRENT_1525_00_MA = 152500,
+	CHARGE_CURRENT_1550_00_MA = 155000,
 	CHARGE_CURRENT_1575_00_MA = 157500,
 	CHARGE_CURRENT_1600_00_MA = 160000,
 	CHARGE_CURRENT_1650_00_MA = 165000,
@@ -509,6 +509,7 @@ typedef enum {
 	CHARGE_CURRENT_1750_00_MA = 175000,
 	CHARGE_CURRENT_1800_00_MA = 180000,
 	CHARGE_CURRENT_1825_00_MA = 182500,
+	CHARGE_CURRENT_1850_00_MA = 185000,
 	CHARGE_CURRENT_1875_00_MA = 187500,
 	CHARGE_CURRENT_1900_00_MA = 190000,
 	CHARGE_CURRENT_1950_00_MA = 195000,
@@ -518,6 +519,7 @@ typedef enum {
 	CHARGE_CURRENT_2050_00_MA = 205000,
 	CHARGE_CURRENT_2100_00_MA = 210000,
 	CHARGE_CURRENT_2125_00_MA = 212500,
+	CHARGE_CURRENT_2150_00_MA = 215000,
 	CHARGE_CURRENT_2175_00_MA = 217500,
 	CHARGE_CURRENT_2200_00_MA = 220000,
 	CHARGE_CURRENT_2300_00_MA = 230000,
@@ -527,6 +529,7 @@ typedef enum {
 	CHARGE_CURRENT_2350_00_MA = 235000,
 	CHARGE_CURRENT_2400_00_MA = 240000,
 	CHARGE_CURRENT_2425_00_MA = 242500,
+	CHARGE_CURRENT_2450_00_MA = 245000,
 	CHARGE_CURRENT_2500_00_MA = 250000,
 	CHARGE_CURRENT_2575_00_MA = 257500,
 	CHARGE_CURRENT_2600_00_MA = 260000,
@@ -619,7 +622,6 @@ extern unsigned int upmu_get_reg_value(unsigned int reg);
 extern void Charger_Detect_Init(void);
 extern void Charger_Detect_Release(void);
 extern int hw_charging_get_charger_type(void);
-extern void hw_bc11_dcd_release(void) __attribute__((weak));
 extern void mt_power_off(void);
 extern unsigned int mt6311_get_chip_id(void);
 extern int is_mt6311_exist(void);
@@ -627,8 +629,6 @@ extern int is_mt6311_sw_ready(void);
 
 extern void hw_charging_enable_dp_voltage(int ison);
 
-/* For RT5735A SDA low workaround */
-extern void battery_disable_batfet(void);
 
 /* switch charger */
 extern void switch_charger_set_vindpm(unsigned int chr_v);
@@ -658,15 +658,8 @@ extern int mtk_chr_get_ibat(unsigned int *ibat);
 extern int mtk_chr_get_vbus(unsigned int *vbus);
 extern int mtk_chr_get_aicr(unsigned int *aicr);
 extern int mtk_chr_is_charger_exist(unsigned char *exist);
-extern int mtk_chr_enable_power_path(unsigned char en);
+extern int mtk_chr_enable_direct_charge(unsigned char charging_enable);
 extern int mtk_chr_enable_charge(unsigned char charging_enable);
 extern int mtk_chr_reset_aicr_upper_bound(void);
-extern int mtk_chr_enable_chr_type_det(unsigned char en);
-extern int mtk_chr_pd_enable_power_path(unsigned char enable);
-extern int mtk_chr_enable_discharge(bool enable);
-extern int mtk_chr_enable_hv_charging(bool en);
-extern bool mtk_chr_is_hv_charging_enable(void);
-extern int mtk_chr_enable_kpoc_shutdown(bool en);
-extern bool mtk_chr_is_kpoc_shutdown_enable(void);
 
 #endif	/* #ifndef _CHARGING_H */

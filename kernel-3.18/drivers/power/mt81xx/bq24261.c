@@ -1,16 +1,3 @@
-/*
- * Copyright (C) 2015 MediaTek Inc.
- *
- * This program is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License version 2 as
- * published by the Free Software Foundation.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
- * GNU General Public License for more details.
- */
-
 #include <linux/interrupt.h>
 #include <linux/i2c.h>
 #include <linux/irq.h>
@@ -24,7 +11,6 @@
 #include <linux/of_irq.h>
 #include <linux/of_address.h>
 #endif
-#include <linux/reboot.h>
 
 #include "bq24261.h"
 #include "mt_charging.h"
@@ -596,7 +582,7 @@ static u32 charging_set_current(void *data)
 	u32 register_value;
 	u32 current_value = *(u32 *) data;
 
-	current_value = current_value / 100;
+	current_value = current_value / 1000;
 
 	if (current_value <= 500)
 		register_value = 0;
@@ -744,10 +730,13 @@ static u32 charging_set_platform_reset(void *data)
 
 	battery_log(BAT_LOG_CRTI, "charging_set_platform_reset\n");
 
+#if 0				/* need porting of orderly_reboot(). */
 	if (system_state == SYSTEM_BOOTING)
 		arch_reset(0, NULL);
 	else
 		orderly_reboot(true);
+#endif
+	arch_reset(0, NULL);
 
 	return status;
 }
@@ -1059,8 +1048,7 @@ static ssize_t store_bq24261_access(struct device *dev, struct device_attribute 
 
 	if (buf != NULL && size != 0) {
 
-		strncpy(temp_buf, buf, sizeof(temp_buf));
-		temp_buf[sizeof(temp_buf) - 1] = 0;
+		strcpy(temp_buf, buf);
 		pvalue = temp_buf;
 		if (size > 4) {
 			ret = kstrtouint(strsep(&pvalue, " "), 0, &reg_address);

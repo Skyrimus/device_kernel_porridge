@@ -47,11 +47,7 @@
 
 
 #define MUTEX_TIMEOUT                       (5000)
-#ifdef BAT_TASK_PERIOD_SECOND
-	#define BAT_TASK_PERIOD                     (BAT_TASK_PERIOD_SECOND)
-#else
-	#define BAT_TASK_PERIOD                     (10)
-#endif
+#define BAT_TASK_PERIOD                     (10)/* 10sec */
 #define g_free_bat_temp					(100)0	/* 1 s */
 
 /*****************************************************************************
@@ -204,7 +200,6 @@ typedef struct {
 	signed int charger_protect_status;
 	signed int ICharging;
 	signed int IBattery;
-	signed int CURRENT_NOW;
 	signed int temperature;
 	signed int temperatureR;
 	signed int temperatureV;
@@ -335,7 +330,7 @@ extern kal_bool ta_cable_out_occur;
 extern kal_bool is_ta_connect;
 extern struct wake_lock TA_charger_suspend_lock;
 #endif
-extern bool gDisableGM;
+
 
 /*****************************************************************************
  *  Extern Function
@@ -390,7 +385,7 @@ extern PMU_STATUS do_jeita_state_machine(void);
 #ifdef CONFIG_MTK_POWER_EXT_DETECT
 extern kal_bool bat_is_ext_power(void);
 #endif
-extern signed int gFG_capacity_by_c;
+
 extern int g_platform_boot_mode;
 extern bool mt_usb_is_device(void);
 #if defined(CONFIG_USB_MTK_HDRC) || defined(CONFIG_USB_MU3D_DRV)

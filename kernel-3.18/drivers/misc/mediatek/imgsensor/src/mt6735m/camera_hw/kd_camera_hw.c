@@ -1449,7 +1449,6 @@ int kdCISModulePowerOn(CAMERA_DUAL_CAMERA_SENSOR_ENUM SensorIdx, char *currSenso
 			ISP_MCLK1_EN(0);
 	}
 
-
 	return 0;
 
 

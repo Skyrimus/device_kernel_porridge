@@ -1,0 +1,7 @@
+make[1]: Entering directory '/root/kernel-3.18/out'
+  GEN     ./Makefile
+#
+# configuration written to .config
+#
+make[1]: Leaving directory '/root/kernel-3.18/out'
+make[1]: Entering directory '/root/kernel-3.18/out'

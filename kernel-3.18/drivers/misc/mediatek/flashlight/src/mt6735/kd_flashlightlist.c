@@ -514,7 +514,7 @@ static int compat_arg_struct_kernel_to_user32(
 
 static long my_ioctl_compat(struct file *filep, unsigned int cmd, unsigned long arg)
 {
-    logI("flash my_ioctl_compat2 line=%d cmd=%d arg=%ld \n",__LINE__,cmd,arg);
+
 	int err;
 	//int copyRet;
 	kdStrobeDrvArg* pUObj;
@@ -538,9 +538,9 @@ static long my_ioctl_compat(struct file *filep, unsigned int cmd, unsigned long 
 		//    return -EFAULT;
     //err = compat_arg_struct_user32_to_kernel(data32, data);
     //arg2 = (unsigned long)data32;
-    err = flashlight_ioctl_core(filep, cmd, pUObj);
+	err = flashlight_ioctl_core(filep, cmd, (unsigned long)pUObj);
 
-    return err;
+	return err;
 
 }
 #endif

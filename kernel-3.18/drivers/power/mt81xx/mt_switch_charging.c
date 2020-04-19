@@ -1,16 +1,3 @@
-/*
- * Copyright (C) 2015 MediaTek Inc.
- *
- * This program is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License version 2 as
- * published by the Free Software Foundation.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
- * GNU General Public License for more details.
- */
-
 
 #include <linux/kernel.h>
 #include <linux/mutex.h>
@@ -195,12 +182,9 @@ static void mtk_ta_init(void)
 
 	if (p_bat_charging_data->ta_9v_support) {
 		ta_vchr_tuning = false;
-		p_bat_charging_data->v_charger_max = 10500;
 		bat_charger_set_hv_threshold(10500000);
-	} else {
-		p_bat_charging_data->v_charger_max = 7500;
+	} else
 		bat_charger_set_hv_threshold(7500000);
-	}
 
 	bat_charger_init(p_bat_charging_data);
 }
@@ -505,7 +489,6 @@ u32 set_bat_charging_current_limit(int current_limit)
 	return g_bcct_flag;
 }
 
-__attribute__ ((weak)) int mt_usb_pd_get_current(void) { return 0; }
 
 void select_charging_curret(void)
 {
@@ -538,13 +521,13 @@ void select_charging_curret(void)
 			{
 				g_temp_input_CC_value = CHARGE_CURRENT_MAX;
 				if (g_usb_state == USB_SUSPEND)
-					g_temp_CC_value = p_bat_charging_data->usb_charger_current_suspend;
+					g_temp_CC_value = USB_CHARGER_CURRENT_SUSPEND;
 				else if (g_usb_state == USB_UNCONFIGURED)
-					g_temp_CC_value = p_bat_charging_data->usb_charger_current_unconfigured;
+					g_temp_CC_value = USB_CHARGER_CURRENT_UNCONFIGURED;
 				else if (g_usb_state == USB_CONFIGURED)
-					g_temp_CC_value = p_bat_charging_data->usb_charger_current_configured;
+					g_temp_CC_value = USB_CHARGER_CURRENT_CONFIGURED;
 				else
-					g_temp_CC_value = p_bat_charging_data->usb_charger_current_unconfigured;
+					g_temp_CC_value = USB_CHARGER_CURRENT_UNCONFIGURED;
 
 				battery_log(BAT_LOG_CRTI,
 					    "[BATTERY] STANDARD_HOST CC mode charging : %d on %d state\r\n",
@@ -561,7 +544,7 @@ void select_charging_curret(void)
 			g_temp_CC_value = p_bat_charging_data->non_std_ac_charger_current;
 
 		} else if (BMT_status.charger_type == STANDARD_CHARGER) {
-			g_temp_input_CC_value = p_bat_charging_data->ac_charger_input_current;
+			g_temp_input_CC_value = p_bat_charging_data->ac_charger_current;
 			g_temp_CC_value = p_bat_charging_data->ac_charger_current;
 #if defined(CONFIG_MTK_PUMP_EXPRESS_PLUS_SUPPORT)
 			if (is_ta_connect == true)
@@ -579,24 +562,6 @@ void select_charging_curret(void)
 		} else if (BMT_status.charger_type == APPLE_0_5A_CHARGER) {
 			g_temp_input_CC_value = p_bat_charging_data->apple_0_5a_charger_current;
 			g_temp_CC_value = p_bat_charging_data->apple_0_5a_charger_current;
-		} else if (BMT_status.charger_type == TYPEC_1_5A_CHARGER) {
-			g_temp_input_CC_value = 150000;
-			g_temp_CC_value = p_bat_charging_data->ac_charger_current;
-		} else if (BMT_status.charger_type == TYPEC_3A_CHARGER) {
-			g_temp_input_CC_value = 280000;
-			g_temp_CC_value = p_bat_charging_data->ac_charger_current;
-		} else if (BMT_status.charger_type == TYPEC_PD_5V_CHARGER) {
-			if (mt_usb_pd_get_current())
-				g_temp_input_CC_value = mt_usb_pd_get_current() * 100;
-			else
-				g_temp_input_CC_value = 150000;
-			g_temp_CC_value = p_bat_charging_data->ac_charger_current;
-		} else if (BMT_status.charger_type == TYPEC_PD_12V_CHARGER) {
-			if (mt_usb_pd_get_current())
-				g_temp_input_CC_value = mt_usb_pd_get_current() * 100;
-			else
-				g_temp_input_CC_value = 150000;
-			g_temp_CC_value = p_bat_charging_data->ac_charger_current;
 		} else {
 			g_temp_input_CC_value = CHARGE_CURRENT_500_00_MA;
 			g_temp_CC_value = CHARGE_CURRENT_500_00_MA;
@@ -678,7 +643,11 @@ static void pchr_turn_on_charging(void)
 
 			/*Set CV Voltage */
 #if !defined(CONFIG_MTK_JEITA_STANDARD_SUPPORT)
-			cv_voltage = p_bat_charging_data->battery_cv_voltage;
+#ifdef CONFIG_HIGH_BATTERY_VOLTAGE_SUPPORT
+			cv_voltage = BATTERY_VOLT_04_340000_V;
+#else
+			cv_voltage = BATTERY_VOLT_04_200000_V;
+#endif
 #else
 			cv_voltage = select_jeita_cv();
 #endif
@@ -714,6 +683,7 @@ int BAT_PreChargeModeAction(void)
 	if (BMT_status.UI_SOC == 100) {
 		BMT_status.bat_charging_state = CHR_BATFULL;
 		BMT_status.bat_full = true;
+		g_charging_full_reset_bat_meter = true;
 	} else if (BMT_status.bat_vol > p_bat_charging_data->v_pre2cc_thres) {
 		BMT_status.bat_charging_state = CHR_CC;
 	}
@@ -772,18 +742,16 @@ int BAT_BatteryFullAction(void)
 	BMT_status.POSTFULL_charging_time = 0;
 	BMT_status.bat_in_recharging_state = false;
 
-	/* still config charger at full charge status */
-	pchr_turn_on_charging();
-
 	if (charging_full_check() == false) {
 		battery_log(BAT_LOG_CRTI, "[BATTERY] Battery Re-charging !!\n\r");
 
-		if (BMT_status.SOC < 100) {
-			battery_log(BAT_LOG_CRTI, "[BATTERY] Leave Re-charging !!\n\r");
-			BMT_status.bat_in_recharging_state = false;
-			BMT_status.bat_charging_state = CHR_CC;
-			BMT_status.bat_full = false;
-			return PMU_STATUS_OK;
+		if (BMT_status.bat_in_recharging_state == true) {
+			if (BMT_status.UI_SOC < 100) {
+				BMT_status.bat_in_recharging_state = false;
+				BMT_status.bat_charging_state = CHR_CC;
+				BMT_status.bat_full = false;
+				return PMU_STATUS_OK;
+			}
 		}
 
 		BMT_status.bat_in_recharging_state = true;
@@ -813,6 +781,13 @@ int BAT_BatteryHoldAction(void)
 int BAT_BatteryCmdHoldAction(void)
 {
 	battery_log(BAT_LOG_CRTI, "[BATTERY] Cmd Hold mode !!\n\r");
+
+	if (!g_cmd_hold_charging) {
+		BMT_status.bat_charging_state = CHR_CC;
+
+		bat_charger_enable_power_path(true);
+		battery_log(BAT_LOG_CRTI, "[BATTERY] Exit Cmd Hold mode and Enter CC mode !!\n\r");
+	}
 
 	BMT_status.bat_full = false;
 	BMT_status.bat_in_recharging_state = false;
@@ -895,4 +870,3 @@ void mt_battery_charging_algorithm(void)
 
 	bat_charger_dump_register();
 }
-
