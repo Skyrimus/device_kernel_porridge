@@ -458,8 +458,7 @@ FTABLE_SCENE_DEP()
                 MtkCameraParameters::FOCUS_MODE_INFINITY,
                 MtkCameraParameters::FOCUS_MODE_CONTINUOUS_PICTURE,
                 MtkCameraParameters::FOCUS_MODE_CONTINUOUS_VIDEO,
-                MtkCameraParameters::FOCUS_MODE_MANUAL,
-                MtkCameraParameters::FOCUS_MODE_FULLSCAN,
+                "manual",   "fullscan",
             )
         ),
         //......................................................................
