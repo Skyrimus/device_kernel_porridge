@@ -190,4 +190,6 @@ $(call inherit-product-if-exists, vendor/mediatek/libs/$(MTK_TARGET_PROJECT)/dev
 PRODUCT_PROPERTY_OVERRIDES += \
 vendor.rild.libpath=mtk-ril.so \
 qemu.hw.mainkeys=0 \
-persist.sys.mtk.disable.incoming.fix=1
+persist.sys.mtk.disable.incoming.fix=1 \
+debug.sf.latch_unsignaled=1 \
+sys.use_fifo_ui=1
