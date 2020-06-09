@@ -191,4 +191,5 @@ PRODUCT_PROPERTY_OVERRIDES += \
 vendor.rild.libpath=mtk-ril.so \
 qemu.hw.mainkeys=0 \
 persist.sys.mtk.disable.incoming.fix=1 \
-ro.vendor.mediatek.version.release=alps-mp-p0-Skyrimus-4PDA
+debug.sf.latch_unsignaled=1 \
+sys.use_fifo_ui=1
