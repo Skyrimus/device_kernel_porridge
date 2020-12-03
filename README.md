@@ -1,2 +1,2 @@
 # device_kernel_porridge
-baa3d017d8ab865d5095072a522298c6
+8fd0b79b500636b2df003d15b5f5937f
