@@ -1,5 +1,5 @@
 # Wileyfox Spark + ALPS 9.0 device tree and kernel
-Here located device tree and kernel for Wileyfox Spark and Wileyfox Spark + devices
+Here located reversed device tree and kernel for Wileyfox Spark and Wileyfox Spark + devices
 * Device model - Wileyfox Spark/Spark +
 * Android - 9.0 and later
 * Kernel version - 3.18.119
